@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/lib/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+			<div class="loginmodal-container">
+				<h1>관리자 페이지 로그인</h1><br>
+				<input type="text" name="id" placeholder="ID">
+				<input type="password" name="password" placeholder="Password">
+				<button name="login" class="login loginmodal-submit" value="login">login</button>
+        <span class="fail-login" style="visibility: hidden;">로그인 실패</span>
+    </div>
+  </body>
+  <script>
+    $(function() {
+      var login = function() {
+        $.post('/login', {
+          'id': $('input[name="id"]').val(),
+          'password': $('input[name="password"]').val()
+        }, function(res) {
+          if (res) {
+            window.location.reload();
+          } else {
+            $('.fail-login').stop().css({opacity: 1.0, visibility: "visible"}).animate({opacity: 0}, 2000);
+          }
+        });
+      };
+
+      $("input").keypress(function(e) {
+        if (e.keyCode == 13){
+          login();
+        }
+      });
+
+      $('button.login').click(function() {
+        login();
+      });
+    });
+  </script>
+</html>

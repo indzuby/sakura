@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/lib/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="/lib/datatables/datatables.min.css">
+    <script src="/lib/datatables/datatables.min.js"></script>
+  </head>
+  <body>
+    <div style="padding: 5px;">
+      <button type="button" id="logout" class="btn btn-outline-secondary" style="cursor: pointer; margin-top: 10px; margin-right: 10px; float: right;">로그아웃</button>
+      <button type="button" id="download" class="btn btn-outline-primary" style="cursor: pointer; margin-top: 10px; margin-right: 10px; float: right;">엑셀 다운로드</button>
+      <button type="button" id="gohome" class="btn btn-outline-secondary" style="cursor: pointer; margin-top: 10px; margin-right: 10px; float: left;">이벤트 페이지로</button>
+      <table id="adminTable" class="display">
+        <thead>
+          <tr>
+            <th>참여번호</th>
+            <th>전화번호</th>
+            <th>시간</th>
+            <th>접속기기</th>
+            <th>OS</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </body>
+  <script>
+    $(function() {
+      $('#adminTable').DataTable({
+        pageLength: 20,
+        bPaginate: true,
+        bLengthChange: false,
+        bAutoWidth: true,
+        searching: false,
+        processing: true,
+        ordering: true,
+        order: [[0, 'desc']],
+        serverSide: true,
+        pagingType: 'full_numbers',
+        ajax: {
+          'url': '/book',
+          'type': 'GET',
+          'dataSrc': function(obj) {
+            return JSON.parse(obj.data);
+          }
+        },
+        columns: [
+          {data: 'orderNumber'},
+          {data: 'phoneNumber'},
+          {
+            data: 'timeStamp',
+            render: function(data) {
+              var date = new Date(data);
+              var dateString = '';
+              var month = (date.getMonth() + 1).toString();
+                  month = month.length == 1 ? '0' + month : month;
+              var _date = date.getDate().toString();
+                  _date = _date.length == 1 ? '0' + _date : _date;
+              var day = date.getDay();
+                  switch (day) {
+                    case 0:
+                      day = '일';
+                      break;
+                    case 1:
+                      day = '월';
+                      break;
+                    case 2:
+                      day = '화';
+                      break;
+                    case 3:
+                      day = '수';
+                      break;
+                    case 4:
+                      day = '목';
+                      break;
+                    case 5:
+                      day = '금';
+                      break;
+                    case 6:
+                      day = '토';
+                      break;
+                  }
+              var hours = date.getHours().toString();
+                  hours = hours.length == 1 ? '0' + hours : hours;
+              var minutes = date.getMinutes().toString();
+                  minutes = minutes.length == 1 ? '0' + minutes : minutes;
+              var seconds = date.getSeconds().toString();
+                  seconds = seconds.length == 1 ? '0' + seconds : seconds;
+              dateString += date.getFullYear();
+              dateString += '-';
+              dateString += month;
+              dateString += '-';
+              dateString += _date;
+              dateString += ' ';
+              dateString += '(' + day + ')';
+              dateString += ' ';
+              dateString += hours;
+              dateString += ':';
+              dateString += minutes;
+              dateString += ':';
+              dateString += seconds;
+              return dateString;
+            }
+          },
+          {data: 'device'},
+          {data: 'platform'},
+          {data: 'ip'}
+        ]
+      });
+
+      $('#download').click(function() {
+        window.location = '/book/xlsx';
+      });
+
+      $('#logout').click(function() {
+        $.post('/logout', function() {
+          window.location.reload();
+        });
+      });
+
+      $('#gohome').click(function() {
+        window.location.href = '/';
+      });
+    });
+  </script>
+</html>
