@@ -20,6 +20,7 @@ $("#reservedSubmit").click(function(){
       'platform': device
     }, function(res) {
       if (res.result) {
+        //test
         fbq('track', 'CompleteRegistration');
         popOpen("regist_done");
       } else {
