@@ -12,7 +12,7 @@ $("#reservedSubmit").click(function(){
     popOpen("cell_error");
     return false;
 	}else if(!$("input[name=agree]").prop("checked")){
-    // popOpen("agree_pop");
+    alert("개인정보 수집 및 이용 동의를 해주세요.");
     return false;
 	} else {
     $.post('/book', {
